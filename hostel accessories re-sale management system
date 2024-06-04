@@ -1,0 +1,283 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+map<pair<string,string>,int> User;
+map<string,int> DataName;
+map<string,int> BookedRoom;
+map<string,int> shopBH1;
+map<string,int> shopBH2;
+map<string,int> shopBH3;
+map<string,int> myBlock;
+map<string,vector<string>> myItem;
+std::vector<vector<int>> Blocks(4,vector<int>(4,0));
+string id;
+
+bool login(string&Name,string&Password){
+	if(User.find({Name,Password}) == User.end()){
+		return false;
+	}
+	return true;
+
+}
+
+bool signUp(){
+    cout <<"Enter Your User Id\n";
+   	   string id; cin >> id;
+   	   if(DataName.find(id) != DataName.end()){
+   	   	   cout << "User Id Already Taken\n";
+   	   	   return false;
+   	   }
+    cout <<"Enter Your PassWord\n";
+   	   string pass; cin >> pass;
+   	   User[{id,pass}] = 1;
+   	   DataName[id] = 1;
+  return true;
+}
+
+bool login(){
+       cout <<"Enter Your Details\n";
+   	   cin >> id;
+   	   cout <<"Enter Your Password\n";
+   	   string pass; cin >> pass;
+   	   if(User.find({id,pass}) == User.end()){
+   	   	   cout <<"Invalid Credentials\n";
+   	   	   return false;
+   	   }
+  return true;
+}
+
+void purchaseBH1(){
+      cout <<"Itmes in the Shop are : \n";
+       cout <<" Items and Availablity of the Items are mentioned below\n";
+      for(auto x : shopBH1){
+            cout << x.first <<" "<< x.second <<"\n";
+      }
+
+     cout << "please select the item which you want to purchase , Case Sensitive\n";
+     string item; cin >> item;
+     if(shopBH1[item] == 0){
+         cout << " Sorry this product is not availabel\n";
+          return;
+     }
+
+     myItem[id].push_back(item);
+     shopBH1[item] -= 1;
+}
+void purchaseBH2(){
+      cout <<"Itmes in the Shop are : \n";
+       cout <<" Items and Availablity of the Items are mentioned below\n";
+      for(auto x : shopBH2){
+            cout << x.first <<" "<< x.second <<"\n";
+      }
+
+     cout << "please select the item which you want to purchase , Case Sensitive\n";
+     string item; cin >> item;
+     if(shopBH2[item] == 0){
+         cout << " Sorry this product is not availabel\n";
+          return;
+     }
+
+     myItem[id].push_back(item);
+     shopBH2[item] -= 1;
+}
+void purchaseBH3(){
+      cout <<"Itmes in the Shop are : \n";
+       cout <<" Items and Availablity of the Items are mentioned below\n";
+      for(auto x : shopBH3){
+            cout << x.first <<" "<< x.second <<"\n";
+      }
+
+     cout << "please select the item which you want to purchase , Case Sensitive\n";
+     string item; cin >> item;
+     if(shopBH3[item] == 0){
+         cout << " Sorry this product is not availabel\n";
+          return;
+     }
+
+     myItem[id].push_back(item);
+     shopBH3[item] -= 1;
+}
+int main(){
+   int attempt; cin >> attempt;
+    shopBH1.insert({"chair",2});
+    shopBH1.insert({"blanket",3});
+    shopBH1.insert({"table",3});
+    shopBH1.insert({"pillow",3});
+
+    shopBH2.insert({"pen",2});
+    shopBH2.insert({"pencil",3});
+    shopBH2.insert({"book",3});
+    shopBH2.insert({"toy",3});
+
+    shopBH3.insert({"flower",2});
+    shopBH3.insert({"gun",3});
+    shopBH3.insert({"earser",3});
+    shopBH3.insert({"toys",3});
+while(attempt--){
+   cout << " SignUp / login , if SignUp Press 'y' , if Already a User Press 'n'";
+   char ch; cin >> ch;
+   bool ok = false, prev = false;
+   if(ch == 'y'){
+   	   bool flag = signUp();
+       if(flag == false)  continue;
+   }else{
+   	   ok = login();
+       if(ok == false) return 0;
+   }
+   if(ok){
+       bool ok = false;
+       cout <<" if you want to check your item please press 'y' else 'n' for purchase and sell ho\n";
+      char c; cin >> c;
+
+      if(c == 'y'){
+          cout << myItem[id].size();
+           for(auto x : myItem[id]){
+               cout << x <<"\n";
+           }
+           continue;
+      }
+      if(c == 'n'){
+             int BhRoom = myBlock[id];
+  cout <<"To Purchase thing please press 'y' or for sell please Press 's' for exit press 'x'\n";
+
+                cout << BhRoom <<"\n";
+                BhRoom++;
+                char c; cin >> c;
+                cout <<" Number of items you want to purchase \n";
+                int k; cin >> k;
+                if(c == 'y'){
+                    if(BhRoom == 1){
+                         while(k--)
+                         purchaseBH1();
+                    }else if(BhRoom == 2){
+                       while(k--)
+                       purchaseBH2();
+                    }else if(BhRoom == 3){
+                       while(k--)
+                       purchaseBH3();
+                    }else{
+                        cout <<"Invalid Input\n";
+                    }
+                }
+
+                if(c == 's'){
+                    cout <<"Enter the Item you want to sell\n";
+                    string thing; cin >> thing;
+                    cout <<" Enter the Quantity\n";
+                    int cnt; cin >> cnt;
+                    if(BhRoom == 1){
+                         shopBH1.insert({thing,cnt});
+                    }else if(BhRoom == 2){
+                       shopBH2.insert({thing,cnt});
+                    }else if(BhRoom == 3){
+                       shopBH3.insert({thing,cnt});
+                    }else{
+                        cout <<"Invalid Input\n";
+                    }
+                }
+                if(c == 'x'){
+                    return 0;
+                }
+        }
+   }else{
+             int cnt1 = 0, cnt2 = 0, cnt3 = 0;
+             for(int i=0;i<3;i++){
+                if(i == 0){
+                	cnt1 = accumulate(begin(Blocks[i]),end(Blocks[i]),0ll);
+                }
+                if(i == 1){
+                	cnt2 = accumulate(begin(Blocks[i]),end(Blocks[i]),0ll);
+                }
+                if(i == 2){
+                	cnt3 = accumulate(begin(Blocks[i]),end(Blocks[i]),0ll);
+                }
+             }
+
+             if(cnt1 < 3) cout <<"Room in Bh1 is Available\n\n";
+             if(cnt2 < 3) cout <<"Room in Bh2 is Available\n\n";
+             if(cnt3 < 3) cout <<"Room in Bh3 is Available\n\n";
+
+             if(cnt1 == cnt2 and cnt2 == cnt3 and cnt1 == 3){
+             	    cout <<"Sorry No Room is Available, You are Redirected To The login Page\n";
+             	    return 0;
+             }
+             cout << "Please Choose the Respective Block from the Available block\n";
+             if(cnt1 < 3){
+             	   cout << "For Bh1 Please Press 1\n";
+             }
+             if(cnt2 < 3){
+             	  cout << "For Bh2 Please Press 2\n";
+             }
+             if(cnt3 < 3){
+             	  cout << "For Bh3 Please Press 3\n";
+             }
+
+             cout <<"Waiting For Input\n";
+
+             int BhRoom; cin >> BhRoom; // choosing room
+              myBlock[id] = BhRoom;
+             if(BhRoom == 1){
+                 cout << "Available Room No are\n";
+                 set<int> st;
+                 for(int i = 0; i < 3; i++){
+                 	    if(Blocks[0][i] == 0){
+                 	      cout <<"Room Number " << i+1 <<" is Available in block" << BhRoom <<"\n";
+                 	    	  st.insert(i+1);
+                 	    }
+                 }
+
+
+                 cout << "Please choose Your Room Number\n";
+                 int k; cin >> k;
+                 if(st.find(k) == st.end()){
+                 	   cout <<"Invalid Input\n";
+                 	   cout <<"You are Redirected to the Login Page\n";
+                 	   continue;
+                 }
+
+                  BookedRoom[id] = k;
+                  Blocks[0][k-1]++;
+             }
+             if(BhRoom == 2){
+                 cout << "Available Room No are\n";
+
+                 set<int> st;
+                 for(int i = 0; i < 3; i++){
+                 	    if(Blocks[1][i] == 0){
+                           st.insert(i+1);
+                 	    	   cout <<"Room Number " << i+1 <<" is Available in block" << BhRoom <<"\n";
+                 	    }
+                 }
+                 cout << "Please choose Your Room Number\n";
+                 int k; cin >> k;
+                 if(st.find(k) == st.end()){
+                 	   cout <<"Invalid Input\n";
+                 	   cout <<"You are Redirected to the Login Page\n";
+                 	   continue;
+                 }
+
+                  BookedRoom[id] = k;
+                  Blocks[1][k-1]++;
+             }
+             if(BhRoom == 3){
+             	   cout << "Available Room No are\n";
+             	   set<int> st;
+             	   for(int i = 0; i < 3; i++){
+                 	    if(Blocks[2][i] == 0){
+                          st.insert(i+1);
+                 	    	  cout <<"Room Number " << i+1 <<" is Available in block" << BhRoom <<"\n";
+                 	    }
+                 }
+                 cout << "Please choose Your Room Number\n";
+                 int k; cin >> k;
+                 if(st.find(k) == st.end()){
+                 	   cout <<"Invalid Input\n";
+                 	   cout <<"You are Redirected to the Login Page\n";
+                 	   continue;
+                 }
+                 BookedRoom[id] = k;
+                 Blocks[2][k-1]++;
+             }
+         }
+     }
+}
